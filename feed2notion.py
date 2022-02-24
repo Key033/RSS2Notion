@@ -3,9 +3,9 @@ import requests
 from utils import NotionAPI, deep_get, parse_rss
 
 NOTION_SEC = os.environ.get("NOTION_SEC")
-NOTION_DB_RSS = "90761665a1d141b984afca52a2b05410"
-NOTION_DB_KEYWORDS = "26d213dcc8b641cd921db43eb7b23733"
-NOTION_DB_READER = "28dfbfdf24a848cd9de28302454ee3dd"
+NOTION_DB_RSS = "753fe2f2d6a248f3b0008073d94fbdf7"
+NOTION_DB_KEYWORDS = "a9f7695a2ba94720b618f23e1bafd2b3"
+NOTION_DB_READER = "0427dc0bb9c242988260c4e0d66a89db"
 
 FEISHU_BOT_API = os.environ.get("FEISHU_BOT_API")
 FEISHU_BOT_SEC = os.environ.get("FEISHU_BOT_SEC")
