@@ -3,12 +3,11 @@ import requests
 from utils import NotionAPI, deep_get, parse_rss
 
 NOTION_SEC = os.environ.get("NOTION_SEC")
-NOTION_DB_RSS = "753fe2f2d6a248f3b0008073d94fbdf7"
-NOTION_DB_KEYWORDS = "a9f7695a2ba94720b618f23e1bafd2b3"
-NOTION_DB_READER = "0427dc0bb9c242988260c4e0d66a89db"
+NOTION_DB_RSS = os.environ.get("NOTION_RSS")
+NOTION_DB_KEYWORDS = os.environ.get("NOTION_KEY")
+NOTION_DB_READER = os.environ.get("NOTION_RED")
 
 FEISHU_BOT_API = os.environ.get("FEISHU_BOT_API")
-FEISHU_BOT_SEC = os.environ.get("FEISHU_BOT_SEC")
 
 
 def feishu_bot_send_msg(msg):
@@ -16,20 +15,19 @@ def feishu_bot_send_msg(msg):
     msg = {"title": "", "content": ""}
     """
     if FEISHU_BOT_API:
-        requests.post(FEISHU_BOT_API, json={"pass": FEISHU_BOT_SEC, "msg": msg})
+        requests.post(FEISHU_BOT_API, json={"msg_type": "post", "content": {"post": {"zh_cn": msg}}})
 
 
 def _wrap_rss_warning_msg_fmt(title, uri):
     content = f"{title} 读取失败！\n\t{uri}"
-    feishu_bot_send_msg({"title": "❗ RSS Warning", "content": content})
+    feishu_bot_send_msg({"title": "❗ RSS Warning", "content": [[{"tag": "text", "text": content}]]})
 
 
 def _wrap_rss_new_msg_fmt(entries):
     content = ""
     for i, entry in enumerate(entries):
         content += f"{i+1}. [{entry.get('title')}]({entry.get('link')}) | {entry.get('rss').get('title')}\n"
-    msg = {"title": "🔔 NEW RSS", "content": content}
-
+    msg = {"title": "🔔 NEW RSS", "content": [[{"tag": "text", "text": content}]]}
     feishu_bot_send_msg(msg)
 
 

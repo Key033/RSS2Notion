@@ -8,8 +8,13 @@ import requests as _req
 NOTION_PARA_BLOCK_LIMIT = 2000
 
 
-TIMESTAMP = lambda: datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-DATESTAMP = lambda: datetime.now().strftime("%Y-%m-%d")
+def TIMESTAMP():
+    return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+
+def DATESTAMP():
+    return datetime.now().strftime("%Y-%m-%d")
+
 
 """
 entry = {
@@ -32,12 +37,10 @@ def parse_rss(rss_info: dict):
     try:
         res = _req.get(
             rss_info.get("uri"),
-            headers={
-                "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.55 Safari/537.36 Edg/96.0.1054.34"
-            },
+            headers={"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.55 Safari/537.36 Edg/96.0.1054.34"},
         )
         feed = feedparser.parse(res.text)
-    except:
+    except feed:
         print("Feedparser error")
         return []
     for entry in feed.entries:
@@ -46,9 +49,7 @@ def parse_rss(rss_info: dict):
                 "title": entry.title,
                 "link": entry.link,
                 "date": entry.get("updated", TIMESTAMP()),
-                "summary": re.sub(r"<.*?>|\n*", "", entry.summary)[
-                    :NOTION_PARA_BLOCK_LIMIT
-                ],
+                "summary": re.sub(r"<.*?>|\n*", "", entry.summary)[:NOTION_PARA_BLOCK_LIMIT],
                 "synced": False,
                 "rss": rss_info,
             }
@@ -86,14 +87,9 @@ class NotionAPI:
 
     def query_keywords(self):
         api = self.api_endpoint(f"/databases/{self._kw_id}/query")
-        res = self.session.post(
-            api, json={"filter": {"property": "Open", "checkbox": {"equals": True}}}
-        )
+        res = self.session.post(api, json={"filter": {"property": "Open", "checkbox": {"equals": True}}})
         results = res.json().get("results")
-        keyword_list = [
-            deep_get(k, "properties.KeyWords.title")[0].get("text").get("content")
-            for k in results
-        ]
+        keyword_list = [deep_get(k, "properties.KeyWords.title")[0].get("text").get("content") for k in results]
         return keyword_list
 
     def query_open_rss(self):
@@ -107,9 +103,7 @@ class NotionAPI:
             {
                 "isWhiteList": deep_get(r, "properties.Whitelist.checkbox"),
                 "uri": deep_get(r, "properties.URI.url"),
-                "title": deep_get(r, "properties.Name.title")[0]
-                .get("text")
-                .get("content"),
+                "title": deep_get(r, "properties.Name.title")[0].get("text").get("content"),
             }
             for r in results
         ]
@@ -117,9 +111,7 @@ class NotionAPI:
 
     def is_page_exist(self, uri):
         api = self.api_endpoint(f"/databases/{self._col_id}/query")
-        res = self.session.post(
-            api, json={"filter": {"property": "URI", "text": {"equals": uri}}}
-        )
+        res = self.session.post(api, json={"filter": {"property": "URI", "text": {"equals": uri}}})
         return len(res.json().get("results")) > 0
 
     def save_page(self, entry):
@@ -142,9 +134,7 @@ class NotionAPI:
                 "URI": {"url": entry.get("link")},
                 "Key Words": {"multi_select": multi_selects},
                 "Entropy": {"number": entry.get("entropy", 0.0)},
-                "Source": {
-                    "rich_text": [{"text": {"content": entry.get("rss").get("title")}}]
-                },
+                "Source": {"rich_text": [{"text": {"content": entry.get("rss").get("title")}}]},
                 "白名单": {"checkbox": entry.get("rss").get("isWhiteList")},
             },
             "children": [
