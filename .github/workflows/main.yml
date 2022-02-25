@@ -17,6 +17,9 @@ jobs:
 
     env:
       NOTION_SEC: ${{ secrets.NOTION_SEC}}
+      NOTION_RSS: ${{ secrets.NOTION_RSS}}
+      NOTION_KEY: ${{ secrets.NOTION_KEY}}
+      NOTION_RED: ${{ secrets.NOTION_RED}}
       FEISHU_BOT_API: ${{ secrets.FEISHU_BOT_API }}
       FEISHU_BOT_SEC: ${{ secrets.FEISHU_BOT_SEC }}
     steps:
