@@ -1,19 +1,11 @@
 import feedparser
 import re
-from datetime import datetime
 from functools import reduce
 import json
 import requests as _req
+import time
 
 NOTION_PARA_BLOCK_LIMIT = 2000
-
-
-def TIMESTAMP():
-    return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
-
-def DATESTAMP():
-    return datetime.now().strftime("%Y-%m-%d")
 
 
 """
@@ -22,7 +14,7 @@ entry = {
     "link"   : "文章链接",
     "summary": "文章摘要",
     "synced" : False,
-    "date"   : "文章时间 | 抓取时间",
+    "time"   : "发布时间",
     "rss"    : {
         "title"      : "RSS 标题",
         "uri"        : "RSS 地址",
@@ -40,7 +32,7 @@ def parse_rss(rss_info: dict):
             headers={"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.55 Safari/537.36 Edg/96.0.1054.34"},
         )
         feed = feedparser.parse(res.text)
-    except feed:
+    except Exception:
         print("Feedparser error")
         return []
     for entry in feed.entries:
@@ -48,7 +40,7 @@ def parse_rss(rss_info: dict):
             {
                 "title": entry.title,
                 "link": entry.link,
-                "date": entry.get("updated", TIMESTAMP()),
+                "time": time.strftime("%Y-%m-%dT%H:%M:%S%z", entry.published_parsed),
                 "summary": re.sub(r"<.*?>|\n*", "", entry.summary)[:NOTION_PARA_BLOCK_LIMIT],
                 "synced": False,
                 "rss": rss_info,
@@ -56,6 +48,10 @@ def parse_rss(rss_info: dict):
         )
     # 读取前 20 条
     return entries[:20]
+
+
+def html2Notion(html: str):
+    pass
 
 
 def deep_get(dictionary, keys, default=None):
@@ -130,27 +126,15 @@ class NotionAPI:
         data = {
             "parent": {"database_id": self._col_id},
             "properties": {
-                "Title": {"title": [{"text": {"content": title}}]},
+                "标题": {"title": [{"text": {"content": title}}]},
                 "URI": {"url": entry.get("link")},
-                "Key Words": {"multi_select": multi_selects},
-                "Entropy": {"number": entry.get("entropy", 0.0)},
-                "Source": {"rich_text": [{"text": {"content": entry.get("rss").get("title")}}]},
+                "关键词": {"multi_select": multi_selects},
+                # "Entropy": {"number": entry.get("entropy", 0.0)},
+                "来源": {"rich_text": [{"text": {"content": entry.get("rss").get("title")}}]},
                 "白名单": {"checkbox": entry.get("rss").get("isWhiteList")},
+                "发布时间": {"date": {"start": entry.get("time")}},
             },
             "children": [
-                {
-                    "type": "heading_3",
-                    "heading_3": {
-                        "text": [
-                            {
-                                "type": "text",
-                                "text": {
-                                    "content": "Summary",
-                                },
-                            }
-                        ]
-                    },
-                },  # H3
                 {
                     "type": "paragraph",
                     "paragraph": {
