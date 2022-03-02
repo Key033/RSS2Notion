@@ -40,7 +40,7 @@ def parse_rss(rss_info: dict):
             {
                 "title": entry.title,
                 "link": entry.link,
-                "time": time.strftime("%Y-%m-%dT%H:%M-%z", entry.published_parsed),
+                "time": time.strftime("%Y-%m-%dT%H:%M:%S%z", entry.published_parsed),
                 "summary": re.sub(r"<.*?>|\n*", "", entry.summary)[:NOTION_PARA_BLOCK_LIMIT],
                 "synced": False,
                 "rss": rss_info,
