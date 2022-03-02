@@ -17,7 +17,7 @@ entry = {
     "time"   : "发布时间",
     "rss"    : {
         "title"      : "RSS 标题",
-        "uri"        : "RSS 地址",
+        "url"        : "RSS 地址",
         "isWhiteList": "是否白名单"
     }
 }
@@ -28,7 +28,7 @@ def parse_rss(rss_info: dict):
     entries = []
     try:
         res = _req.get(
-            rss_info.get("uri"),
+            rss_info.get("url"),
             headers={"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.55 Safari/537.36 Edg/96.0.1054.34"},
         )
         feed = feedparser.parse(res.text)
@@ -98,16 +98,16 @@ class NotionAPI:
         rss_list = [
             {
                 "isWhiteList": deep_get(r, "properties.Whitelist.checkbox"),
-                "uri": deep_get(r, "properties.URI.url"),
+                "url": deep_get(r, "properties.URL.url"),
                 "title": deep_get(r, "properties.Name.title")[0].get("text").get("content"),
             }
             for r in results
         ]
         return rss_list
 
-    def is_page_exist(self, uri):
+    def is_page_exist(self, url):
         api = self.api_endpoint(f"/databases/{self._col_id}/query")
-        res = self.session.post(api, json={"filter": {"property": "URI", "text": {"equals": uri}}})
+        res = self.session.post(api, json={"filter": {"property": "URL", "text": {"equals": url}}})
         return len(res.json().get("results")) > 0
 
     def save_page(self, entry):

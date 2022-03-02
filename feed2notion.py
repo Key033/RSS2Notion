@@ -18,8 +18,8 @@ def feishu_bot_send_msg(msg):
         requests.post(FEISHU_BOT_API, json={"msg_type": "post", "content": {"post": {"zh_cn": msg}}})
 
 
-def _wrap_rss_warning_msg_fmt(title, uri):
-    content = f"{title} 读取失败！\n\t{uri}"
+def _wrap_rss_warning_msg_fmt(title, url):
+    content = f"{title} 读取失败！\n\t{url}"
     feishu_bot_send_msg({"title": "❗ RSS Warning", "content": [[{"tag": "text", "text": content}]]})
 
 
@@ -61,7 +61,7 @@ def read_rss(rsslist):
         print(f"Got {len(entries)} items from #{rss.get('title')}#")
         if len(entries) == 0:
             # 飞书提示
-            _wrap_rss_warning_msg_fmt(rss.get("title"), rss.get("uri"))
+            _wrap_rss_warning_msg_fmt(rss.get("title"), rss.get("url"))
         for entry in entries:
             yield entry
 
