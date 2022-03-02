@@ -127,7 +127,7 @@ class NotionAPI:
             "parent": {"database_id": self._col_id},
             "properties": {
                 "标题": {"title": [{"text": {"content": title}}]},
-                "URI": {"url": entry.get("link")},
+                "URL": {"url": entry.get("link")},
                 "关键词": {"multi_select": multi_selects},
                 # "Entropy": {"number": entry.get("entropy", 0.0)},
                 "来源": {"rich_text": [{"text": {"content": entry.get("rss").get("title")}}]},
