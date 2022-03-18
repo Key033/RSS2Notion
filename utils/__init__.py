@@ -6,7 +6,7 @@ import requests as _req
 import time
 
 NOTION_PARA_BLOCK_LIMIT = 2000
-
+now = time.time()
 
 """
 entry = {
@@ -36,16 +36,17 @@ def parse_rss(rss_info: dict):
         print("Feedparser error")
         return []
     for entry in feed.entries:
-        entries.append(
-            {
-                "title": entry.title,
-                "link": entry.link,
-                "time": time.strftime("%Y-%m-%dT%H:%M:%S%z", entry.published_parsed),
-                "summary": re.sub(r"<.*?>|\n*", "", entry.summary)[:NOTION_PARA_BLOCK_LIMIT],
-                "synced": False,
-                "rss": rss_info,
-            }
-        )
+        if now - time.mktime(entry.published_parsed) < (7 * 24 * 3600):
+            entries.append(
+                {
+                    "title": entry.title,
+                    "link": entry.link,
+                    "time": time.strftime("%Y-%m-%dT%H:%M:%S%z", entry.published_parsed),
+                    "summary": re.sub(r"<.*?>|\n*", "", entry.summary)[:NOTION_PARA_BLOCK_LIMIT],
+                    "synced": False,
+                    "rss": rss_info,
+                }
+            )
     # 读取前 20 条
     return entries[:20]
 
