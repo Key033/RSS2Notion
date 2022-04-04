@@ -1,3 +1,4 @@
+# 待办事项：在程序中加入自动删除7天内项目的功能
 import os
 from feedtool import NotionAPI, parse_rss
 
