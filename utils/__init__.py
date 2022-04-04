@@ -48,16 +48,6 @@ def parse_rss(rss_info: dict):
                     "rss": rss_info,
                 }
             )
-        # else:
-        #     entries.append(
-        #         {
-        #             "title": entry.title,
-        #             "link": entry.link,
-        #             "summary": re.sub(r"<.*?>|\n*", "", entry.summary)[:NOTION_PARA_BLOCK_LIMIT],
-        #             "synced": False,
-        #             "rss": rss_info,
-        #         }
-        #     )
     # 读取前 20 条
     return entries[:20]
 

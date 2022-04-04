@@ -23,14 +23,6 @@ def _wrap_rss_warning_msg_fmt(title, url):
     feishu_bot_send_msg({"title": "❗ RSS Warning", "content": [[{"tag": "text", "text": content}]]})
 
 
-def _wrap_rss_new_msg_fmt(entries):
-    content = ""
-    for i, entry in enumerate(entries):
-        content += f"{i+1}. [{entry.get('title')}]({entry.get('link')}) | {entry.get('rss').get('title')}\n"
-    msg = {"title": "🔔 NEW RSS", "content": [[{"tag": "text", "text": content}]]}
-    feishu_bot_send_msg(msg)
-
-
 def process_entry(entry: dict, keywords: list):
     entropy = 0
     match_keywords = []
@@ -74,13 +66,11 @@ def run():
 
     keywords = api.query_keywords()
 
-    new_entries = []
     for entry in read_rss(api.query_open_rss()):
         res = process_entry(entry, keywords)
         if res.get("entropy") > 0:
             if not api.is_page_exist(entry.get("link")):
                 api.save_page(entry)
-                new_entries.append(entry)
             else:
                 print(f"Entry {entry.get('title')} already exist!")
     # 飞书提示
