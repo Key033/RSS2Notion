@@ -1,5 +1,5 @@
-.vscode/*
-
+.vscode
+__pycache__
 # Local History for Visual Studio Code
 .history/
 

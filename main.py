@@ -1,6 +1,6 @@
 import os
 import requests
-from utils import NotionAPI, deep_get, parse_rss
+from feedtool import NotionAPI, deep_get, parse_rss
 
 NOTION_SEC = os.environ.get("NOTION_SEC")
 NOTION_DB_RSS = os.environ.get("NOTION_RSS")
