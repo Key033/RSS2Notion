@@ -35,4 +35,4 @@ jobs:
 
       - name: Load RSS feeds
         run: |
-          python feed2notion.py
+          python main.py
