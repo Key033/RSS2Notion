@@ -54,7 +54,19 @@ class NotionAPI:
             "Accept": "application/json",
         }
         self.delete_rss()
-        self.data = requests.request("POST", url=f"{self.NOTION_API_database}/{self.reader_id}/query", headers=self.headers, json={"sorts": [{"timestamp": "created_time", "direction": "descending"}]})
+        self.data = requests.request(
+            "POST",
+            url=f"{self.NOTION_API_database}/{self.reader_id}/query",
+            headers=self.headers,
+            json={
+                "sorts": [
+                    {
+                        "timestamp": "created_time",
+                        "direction": "descending",
+                    }
+                ]
+            },
+        )
         self.urls = [x.get("properties").get("URL").get("url") for x in self.data.json().get("results")]
 
     def query_open_rss(self):
@@ -62,7 +74,12 @@ class NotionAPI:
             "POST",
             url=f"{self.NOTION_API_database}/{self.feeds_id}/query",
             headers=self.headers,
-            json={"filter": {"property": "Enable", "checkbox": {"equals": True}}},
+            json={
+                "filter": {
+                    "property": "Enable",
+                    "checkbox": {"equals": True},
+                }
+            },
         )
         results = res.json().get("results")
         rss_list = [
@@ -78,18 +95,55 @@ class NotionAPI:
         data = {
             "parent": {"database_id": self.reader_id},
             "properties": {
-                "标题": {"title": [{"text": {"content": entry.get("title")}}]},
+                "标题": {
+                    "title": [
+                        {
+                            "text": {"content": entry.get("title")},
+                        }
+                    ]
+                },
                 "URL": {"url": entry.get("link")},
-                "来源": {"rich_text": [{"text": {"content": entry.get("rss").get("title")}}]},
+                "来源": {
+                    "rich_text": [
+                        {
+                            "text": {"content": entry.get("rss").get("title")},
+                        }
+                    ]
+                },
                 "发布时间": {"date": {"start": entry.get("time")}},
             },
-            "children": [{"type": "paragraph", "paragraph": {"rich_text": [{"type": "text", "text": {"content": entry.get("summary")}}]}}],
+            "children": [
+                {
+                    "type": "paragraph",
+                    "paragraph": {
+                        "rich_text": [
+                            {
+                                "type": "text",
+                                "text": {"content": entry.get("summary")},
+                            }
+                        ]
+                    },
+                }
+            ],
         }
         res = requests.request("POST", url=self.NOTION_API_pages, headers=self.headers, data=json.dumps(data))
         return res.json()
 
     def delete_rss(self):
-        filter_json = {"filter": {"and": [{"property": "已读", "checkbox": {"equals": True}}, {"property": "发布时间", "date": {"before": delete_time.strftime("%Y-%m-%dT%H:%M:%S%z")}}]}}
+        filter_json = {
+            "filter": {
+                "and": [
+                    {
+                        "property": "已读",
+                        "checkbox": {"equals": True},
+                    },
+                    {
+                        "property": "发布时间",
+                        "date": {"before": delete_time.strftime("%Y-%m-%dT%H:%M:%S%z")},
+                    },
+                ]
+            }
+        }
         results = requests.request("POST", url=f"{self.NOTION_API_database}/{self.reader_id}/query", headers=self.headers, json=filter_json).json().get("results")
         payload = {"archived": True}
         responses = []
