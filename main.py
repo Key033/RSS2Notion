@@ -4,7 +4,6 @@ from feedtool import NotionAPI, parse_rss
 NOTION_SEC = os.environ.get("NOTION_SEC")
 NOTION_DB_READER = os.environ.get("NOTION_RED")
 NOTION_DB_FEEDS = os.environ.get("NOTION_FED")
-FEISHU_BOT_API = os.environ.get("FEISHU_BOT_API")
 
 
 def read_rss(api: NotionAPI):

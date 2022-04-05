@@ -13,15 +13,12 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.8]
+        python-version: [3.10]
 
     env:
       NOTION_SEC: ${{ secrets.NOTION_SEC}}
-      NOTION_RSS: ${{ secrets.NOTION_RSS}}
-      NOTION_KEY: ${{ secrets.NOTION_KEY}}
+      NOTION_FED: ${{ secrets.NOTION_FED}}
       NOTION_RED: ${{ secrets.NOTION_RED}}
-      FEISHU_BOT_API: ${{ secrets.FEISHU_BOT_API }}
-      FEISHU_BOT_SEC: ${{ secrets.FEISHU_BOT_SEC }}
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python ${{ matrix.python-version }}
