@@ -54,7 +54,7 @@ class NotionAPI:
             "Accept": "application/json",
         }
         self.delete_rss()
-        self.data = requests.request("POST", url=f"{self.NOTION_API_database}/{self.reader_id}/query", headers=self.headers)
+        self.data = requests.request("POST", url=f"{self.NOTION_API_database}/{self.reader_id}/query", headers=self.headers, json={"sorts": [{"timestamp": "created_time", "direction": "descending"}]})
         self.urls = [x.get("properties").get("URL").get("url") for x in self.data.json().get("results")]
 
     def query_open_rss(self):
