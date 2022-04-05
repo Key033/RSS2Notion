@@ -1,34 +1,32 @@
-# 待办事项：在程序中加入自动删除7天内项目的功能
 import os
 from feedtool import NotionAPI, parse_rss
 
 NOTION_SEC = os.environ.get("NOTION_SEC")
-NOTION_DB_RSS = os.environ.get("NOTION_RSS")
 NOTION_DB_READER = os.environ.get("NOTION_RED")
+NOTION_DB_FEEDS = os.environ.get("NOTION_FED")
 FEISHU_BOT_API = os.environ.get("FEISHU_BOT_API")
 
 
-def read_rss(api):
+def read_rss(api: NotionAPI):
     for rss in api.query_open_rss():
         # !! 必须和 Notion RSS DB 保持一致
         entries = parse_rss(rss)
-        print(f"Got {len(entries)} items from #{rss.get('title')}#")
         if len(entries) == 0:
             continue
-        data = api.session.post(api.NOTION_API_HOST + f"/databases/{api._col_id}/query", json={"filter": {"property": "来源", "text": {"equals": entries[0].get("rss").get("title")}}})
-        urls = [x.get("properties").get("URL").get("url") for x in data.json().get("results")]
+        repeat_flag = 0
         for entry in entries:
-            if entry.get("link") not in urls:
+            if entry.get("link") not in api.urls:
                 api.save_page(entry)
             else:
-                print(f"Entry {entry.get('title')} already exist!")
+                repeat_flag += 1
+        print(f"从 {rss.get('title')} 读取到 {len(entries)} 篇内容，其中重复 {repeat_flag} 篇。")
 
 
 def run():
     if NOTION_SEC is None:
         print("NOTION_SEC secrets is not set!")
         return
-    api = NotionAPI(NOTION_SEC, NOTION_DB_RSS, NOTION_DB_READER)
+    api = NotionAPI(NOTION_SEC, NOTION_DB_READER, NOTION_DB_FEEDS)
 
     read_rss(api)
 
