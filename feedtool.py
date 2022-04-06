@@ -130,8 +130,9 @@ class NotionAPI:
             }
         }
         results = requests.request("POST", url=f"{self.NOTION_API_database}/{self.reader_id}/query", headers=self.headers, json=filter_json).json().get("results")
-        payload = {"archived": True}
         responses = []
-        for result in results:
-            responses += [requests.request("PATCH", url=f"{self.NOTION_API_pages}/{result.get('id')}", json=payload, headers=self.headers).json()]
+        if len(results) == 0:
+            payload = {"archived": True}
+            for result in results:
+                responses += [requests.request("PATCH", url=f"{self.NOTION_API_pages}/{result.get('id')}", json=payload, headers=self.headers).json()]
         return responses
