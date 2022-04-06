@@ -14,7 +14,7 @@ def read_rss(api: NotionAPI):
             continue
         repeat_flag = 0
         for entry in entries:
-            if entry.get("link") not in api.urls:
+            if entry.get("title") not in api.titles:
                 api.save_page(entry)
             else:
                 repeat_flag += 1

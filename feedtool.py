@@ -67,7 +67,7 @@ class NotionAPI:
                 ]
             },
         )
-        self.urls = [x.get("properties").get("URL").get("url") for x in self.data.json().get("results")]
+        self.titles = [x.get("properties").get("标题").get("title")[0].get("text").get("content") for x in self.data.json().get("results")]
 
     def query_open_rss(self):
         res = requests.request(
