@@ -34,6 +34,7 @@ def read_rss(api: NotionAPI):
         for entry in entries:
             if entry.get("link") not in urls:
                 api.save_page(entry)
+                urls += [entry.get("link")]
             else:
                 repeat_flag += 1
         print(f"从 {rss.get('title')} 读取到 {len(entries)} 篇内容，其中重复 {repeat_flag} 篇。")
