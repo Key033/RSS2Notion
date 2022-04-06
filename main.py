@@ -18,8 +18,8 @@ def read_rss(api: NotionAPI):
             headers=api.headers,
             json={
                 "filter": {
-                    "property": "来源",
-                    "rich_text": {"equals": f"{entries[0].get('rss').get('title')}"},
+                    "property": "Origin",
+                    "select": {"equals": f"{entries[0].get('rss').get('title')}"},
                 },
                 "sorts": [
                     {

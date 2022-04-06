@@ -81,22 +81,21 @@ class NotionAPI:
         data = {
             "parent": {"database_id": self.reader_id},
             "properties": {
-                "标题": {
+                "Name": {
                     "title": [
                         {
+                            "type": "text",
                             "text": {"content": entry.get("title")},
                         }
                     ]
                 },
                 "URL": {"url": entry.get("link")},
-                "来源": {
-                    "rich_text": [
-                        {
-                            "text": {"content": entry.get("rss").get("title")},
-                        }
-                    ]
+                "Origin": {
+                    "select": {
+                        "name": entry.get("rss").get("title"),
+                    }
                 },
-                "发布时间": {"date": {"start": entry.get("time")}},
+                "Published": {"date": {"start": entry.get("time")}},
             },
             "children": [
                 {
@@ -120,11 +119,11 @@ class NotionAPI:
             "filter": {
                 "and": [
                     {
-                        "property": "已读",
+                        "property": "Check",
                         "checkbox": {"equals": True},
                     },
                     {
-                        "property": "发布时间",
+                        "property": "Published",
                         "date": {"before": delete_time.strftime("%Y-%m-%dT%H:%M:%S%z")},
                     },
                 ]

@@ -1,6 +1,7 @@
 # 使用Notion订阅内容
 
-[Notion模板](https://functional-crown-0ab.notion.site/RSS-Template-b5da900be13646bf8300da7474ddf442)
+该[Notion模板](https://functional-crown-0ab.notion.site/RSS-Template-1f69adf675c44599af2d11721febdbb3)
+匹配了简悦的[导入到 Notion 辅助增强](https://github.com/Kenshin/simpread/discussions/3572)功能。读取到的内容可以放入同一个收藏夹。
 ## 环境变量
 需要用到Notion机器人的token，Notion模板中两个数据库**收集**和**订阅入口**的ID。
 
@@ -31,8 +32,8 @@ data = requests.request(
     headers=api.headers,
     json={
         "filter": {
-            "property": "来源",
-            "rich_text": {"equals": f"{entries[0].get('rss').get('title')}"},
+            "property": "Origin",
+            "select": {"equals": f"{entries[0].get('rss').get('title')}"},
         },
         "sorts": [
             {
