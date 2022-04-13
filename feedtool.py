@@ -23,7 +23,10 @@ def parse_rss(rss_info: dict):
         print(f"加载 {rss_info.get('title')} 失败")
         return []
     for entry in feed.entries:
-        published_time = parser.parse(entry.get("published"))
+        if entry.get("published"):
+            published_time = parser.parse(entry.get("published"))
+        else:
+            published_time = datetime.now(timezone.utc)
         if not published_time.tzinfo:
             published_time = published_time.replace(tzinfo=timezone(timedelta(hours=8)))
         if now - published_time < timedelta(load_time):
