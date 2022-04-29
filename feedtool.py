@@ -7,7 +7,7 @@ from dateutil import parser
 
 NOTION_PARA_BLOCK_LIMIT = 2000
 now = datetime.now(timezone.utc)
-delete_time = now - timedelta(7)  # 删除7天前的内容
+delete_time = now - timedelta(14)  # 删除14天前的内容
 load_time = 2  # 导入2天内的内容
 
 
