@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: Get RSS
+name: Get RSS (20220529)
 
 # Controls when the workflow will run
 on:
