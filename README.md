@@ -1,4 +1,5 @@
 # 使用Notion订阅内容
+**使用的时候，需要自己Fork一个新的repository。**
 
 该[Notion模板](https://functional-crown-0ab.notion.site/RSS-Template-1f69adf675c44599af2d11721febdbb3)
 匹配了简悦的[导入到 Notion 辅助增强](https://github.com/Kenshin/simpread/discussions/3572)功能。读取到的内容可以放入同一个收藏夹。
