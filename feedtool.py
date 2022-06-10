@@ -22,6 +22,9 @@ def parse_rss(rss_info: dict):
     except requests.exceptions.ProxyError:
         print(f"加载 {rss_info.get('title')} 失败")
         return []
+    except requests.exceptions.ConnectTimeout:
+        print(f"加载 {rss_info.get('title')} 超时")
+        return []
     for entry in feed.entries:
         if entry.get("published"):
             published_time = parser.parse(entry.get("published"))
